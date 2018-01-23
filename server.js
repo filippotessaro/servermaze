@@ -219,6 +219,14 @@ apiRoutes.route('/users/level/:user_id')
 		});
 
 	});
+})
+.get(function(req,res){
+	User.findById(req.params.user_id, function (err, user) {
+		if (err) { res.send(err); }
+		// update the bears info
+		var livelli = user.livelli;
+		res.json(livelli);
+	});
 });
 
 apiRoutes.get('/check', function(req, res) {
