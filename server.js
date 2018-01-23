@@ -224,10 +224,14 @@ apiRoutes.route('/users/level/:user_id')
 	User.findById(req.params.user_id, function (err, user) {
 		if (err) { res.send(err); }
 		// update the bears info
-		var livelli = user.livelli;
-		res.json(livelli);
+		
+			// res.json(user);
+			console.log(user);
+			res.json(user.livelli);
+		
+
 	});
-});
+})
 
 apiRoutes.get('/check', function(req, res) {
 	res.json(req.decoded);

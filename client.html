@@ -25,7 +25,7 @@
             </div>
         </div>
         <table class="table table-striped">
-            <tr><td style="width: 1px;"></td><td><b>User</b></td><td><b>Password</b></td><td><b>Telefono</b></td><td><b>Options</b></td></tr>
+            <tr><td style="width: 1px;"></td><td><b>User</b></td><td><b>Password</b></td><td><b>Telefono</b></td><td><b>#Livelli Assegnati</b></td><td><b>Options</b></td></tr>
             <!-- ko foreach: users -->
             <tr>
                 <td>
@@ -42,6 +42,11 @@
                     <p data-bind="text: telefono"></p>
                 </td>
                 <td>
+                    <p data-bind="text: livelli"></p>
+                    
+                </td> 
+                <td>
+                    <button data-bind="click: $parent.beginShowLevels" class="btn btn-info">Mostra Livelli</button>
                     <button data-bind="click: $parent.beginEdit" class="btn">Edit</button>
                     <button data-bind="click: $parent.beginAddLevel" class="btn">Add Level</button>
                     <button data-bind="click: $parent.remove" class="btn">Delete</button>
@@ -144,12 +149,6 @@
                     </div>
                     
                 </div>
-                <!-- <div class="control-group">
-                    <label class="control-label" for="inputTelefono">Data da Svolgere</label>
-                    <div class="controls">
-                        <input data-bind="value: dataAssegnazione" type="text" id="inputTelefono" placeholder="11/11/2018" style="width: 300px;">
-                    </div>
-                </div> -->
             </form>
         </div>
         <div class="modal-footer">
@@ -183,16 +182,53 @@
             <button data-bind="click: login" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Sign In</button>
         </div>
     </div>
+
+    <div id="showLevels" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+        <div class="modal-header">
+                <h3 id="editDialogLabel">Livelli Utente:</h3>
+                <h2 data-bind="text: name"> </h2>
+            </div>
+            <div class="modal-body">
+                    <table class="table table-striped">
+                            <tr><td style="width: 1px;"></td><td><b>Svolto</b></td><td><b>_id</b></td><td><b>Numero</b></td><td><b>Tocchi</b></td><td><b>Tempo</b></td></tr>
+                            <!-- ko foreach: livelli -->
+                            <tr>
+                                <td>
+                                    <span data-bind="visible: svolto" class="label label-success">Svolto</span>
+                                    <span data-bind="visible: !svolto()" class="label label-important">Non Svolto</span>
+                                </td>
+                                <td>
+                                    <p><b data-bind="text: uri"></b></p>
+                                </td>
+                                <td>
+                                    <p data-bind="text: numero"></p>
+                                </td>
+                                <td>
+                                    <p data-bind="text: numerotocchi"></p>
+                                </td>
+                                <td>
+                                    <p data-bind="text: tempo"></p>
+                                </td> 
+                            </tr>
+                            <!-- /ko -->
+                        </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-bind="click: close"  aria-hidden="true">Cancel</button>
+            </div>
+    </div>
+
     <script type="text/javascript">
         function UsersViewModel() {
             var self = this;
             self.authenticationURI = 'http://localhost:8080/api/authenticate';
             self.usersURI = 'http://localhost:8080/api/users';
-            // self.authenticationURI = 'https://localhost:8080/api/authenticate';
+            // self.authenticationURI = 'http://localhost:8080/api/authenticate';
             // self.usersURI = 'https://localhost:8080/api/users';
             self.username = ko.observable("unsigned user");
             self.token = "";
             self.users = ko.observableArray();
+            // self.livelli = ko.observableArray();
             self.ajax = function(uri, method, data) {
                 return fetch(uri,
                 {
@@ -212,6 +248,10 @@
             }
             self.beginAdd = function() {
                 $('#add').modal('show');
+            }
+            self.beginShowLevels = function(user){
+                showLevelsViewModel.setUser(user,self.token);
+                $('#showLevels').modal('show');
             }
             self.add = function(user) {
                 self.ajax(self.usersURI, 'POST', user).then(function(data) {
@@ -249,9 +289,6 @@
                 
             }
 
-
-
-
             self.edit = function(user, data) {
                 self.ajax(user.uri(), 'PUT', data).then(function(res) {
                     self.updateUser(user, res);
@@ -276,6 +313,7 @@
             }
             self.refresh = function() {
                 self.users();
+                
                 fetch(self.usersURI, { headers: {'x-access-token': self.token} })
                 .then((resp) => resp.json()) // Transform the data into json
                 .then((data) => {
@@ -286,7 +324,8 @@
                             name: ko.observable(data[i].name),
                             password: ko.observable(data[i].password),
                             admin: ko.observable(data[i].admin),
-                            telefono: ko.observable(data[i].telefono)
+                            telefono: ko.observable(data[i].telefono),
+                            livelli: ko.observable(data[i].livelli.length)
                         });
                     }
                 });
@@ -369,11 +408,50 @@
             }
         }
 
+        function ShowLevelsViewModel(){
+            var self = this;
+            self.uri = ko.observable();
+            self.name = ko.observable();
+            self.livelli = ko.observableArray();
+            self.token = ko.observable();
+            
+            self.setUser = function(user,token) {
+                self.user = user;
+                self.token=token;
+                self.name(user.name());
+                self.uri(user.uri2())
+                $('#showLevels').modal('show');
+                self.refresh();
+                console.log(self.uri());
+            }
+
+            self.refresh = function(){
+                fetch('http://localhost:8080/api/users/level/'+self.uri(), {headers: {'x-access-token': self.token} })
+                .then((resp) => resp.json()) // Transform the data into json
+                .then((data) => {
+                    for (var i = 0; i < data.length; i++) {
+                        self.livelli.push({
+                            uri: ko.observable(data[i]._id),
+                            numero: ko.observable(data[i].numero),
+                            numerotocchi: ko.observable(data[i].numerotocchi),
+                            tempo: ko.observable(data[i].tempo),
+                            svolto: ko.observable(data[i].svolto),
+                        });
+                    }
+                });
+            }
+            self.close = function(){
+                $('#showLevels').modal('hide');
+                self.livelli.removeAll();
+            }
+
+            
+
+        }
 
         function EditLevelViewModel() {
             var self = this;
             self.numero = ko.observable();
-            // self.dataAssegnazione = ko.observable();
             self.user = ko.observable();
             
             self.setUser = function(user) {
@@ -387,8 +465,6 @@
                 
             }
         }
-
-
 
         function LoginViewModel() {
             var self = this;
@@ -406,15 +482,13 @@
         var editUserViewModel = new EditUserViewModel();
         var loginViewModel = new LoginViewModel();
         var editLevelViewModel = new EditLevelViewModel();
+        var showLevelsViewModel = new ShowLevelsViewModel();
         ko.applyBindings(usersViewModel, $('#main')[0]);
         ko.applyBindings(addUserViewModel, $('#add')[0]);
         ko.applyBindings(editUserViewModel, $('#edit')[0]);
         ko.applyBindings(loginViewModel, $('#login')[0]);
         ko.applyBindings(editLevelViewModel,$('#level')[0]);
+        ko.applyBindings(showLevelsViewModel, $('#showLevels')[0]);
     </script>
 </body>
 </html>
-
-<!-- POST http://localhost:8080/api/users/level:http://localhost:8080/api/users/5a65b5b11d88b733902f1a74 403 (Forbidden) -->
-
-<!-- POST http://localhost:8080/api/users/level/5a65b5b11d88b733902f1a74 403 (Forbidden) -->
