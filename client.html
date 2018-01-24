@@ -190,7 +190,7 @@
             </div>
             <div class="modal-body">
                     <table class="table table-striped">
-                            <tr><td style="width: 1px;"></td><td><b>Svolto</b></td><td><b>_id</b></td><td><b>Numero</b></td><td><b>Tocchi</b></td><td><b>Tempo</b></td></tr>
+                            <tr><td><b>Svolto</b></td><td><b>_id</b></td><td><b>Numero</b></td><td><b>Tocchi</b></td><td><b>Tempo</b></td></tr>
                             <!-- ko foreach: livelli -->
                             <tr>
                                 <td>
@@ -351,6 +351,7 @@
                     self.token = data.token;
                     self.username(user);
                     console.log('authenticated! token is: ' + self.token);
+                    console.log(data.user)
                 })
                 .then(self.refresh)
             }
