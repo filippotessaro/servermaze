@@ -70,7 +70,7 @@ var apiRoutes = express.Router();
 // ---------------------------------------------------------
 // http://localhost:8080/api/authenticate
 apiRoutes.post('/authenticate', function(req, res) {
-
+	console.log('authenticate')
 	// find the user
 	User.findOne({
 		name: req.body.name
@@ -80,8 +80,9 @@ apiRoutes.post('/authenticate', function(req, res) {
 		
 		if (!user) {
 			res.json({ success: false, message: 'Authentication failed. User not found.' });
+			console.log('autentication failed')
 		} else if (user) {
-
+			console.log('Autentication START')
 			// check if password matches
 			if (user.password != req.body.password) {
 				res.json({ success: false, message: 'Authentication failed. Wrong password.' });
@@ -96,7 +97,8 @@ apiRoutes.post('/authenticate', function(req, res) {
 					expiresIn: 86400 // expires in 24 hours
 				}
 				var token = jwt.sign(payload, app.get('superSecret'), options);
-
+				console.log('user_id:'+user._id + 'token creato!')
+				console.log('token: '+ token)
 				res.json({
 					success: true,
 					message: 'Enjoy your token!',
@@ -224,15 +226,58 @@ apiRoutes.route('/users/level/:user_id')
 .get(function(req,res){
 	User.findById(req.params.user_id, function (err, user) {
 		if (err) { res.send(err); }
-		// update the bears info
-		
-			// res.json(user);
 			console.log(user);
 			res.json(user.livelli);
 		
 
 	});
 })
+
+//route con query dove metto levelid e userid
+//get specifico livello
+apiRoutes.route('/levels')
+.get(function(req, res) {
+	var level_id = req.query.levelId
+	var user_id = req.query.userId
+	User.findById(user_id, function (err, user) {
+		if (err) { res.send(err); }
+		console.log('utente trovato!')
+		for(var i=0; user.livelli.length; i++){
+			if(user.livelli[i]._id == level_id){
+				console.log(user.livelli[i])
+				res.json(user.livelli[i])
+				break;
+			}
+		}
+	});
+  })
+//modifica un determinato livello
+  .put(function(req, res) {
+	var level_id = req.query.levelId
+	var user_id = req.query.userId
+	
+	User.findById(user_id, function (err, user) {
+		if (err) { res.send(err); }
+		console.log('utente trovato!')
+		for(var i=0; user.livelli.length; i++){
+			if(user.livelli[i]._id == level_id){
+				if(req.body.numerotocchi!=0 && req.body.tempo!=0){
+					user.livelli[i].numerotocchi = req.body.numerotocchi || user.livelli[i].numerotocchi
+					user.livelli[i].tempo = req.body.tempo || user.livelli[i].tempo
+					user.livelli[i].svolto = req.body.svolto || user.livelli[i].svolto
+					user.save()
+					console.log(user.livelli[i])
+					// res.json('Ok!')
+					res.status(200).end()
+					break;
+				}
+				
+			}else if(i=user.livelli.length-1 && user.livelli[i]._id != level_id){
+				res.status(404).end()
+			}
+		}
+	});
+  });
 
 apiRoutes.get('/check', function(req, res) {
 	res.json(req.decoded);
