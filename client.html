@@ -122,7 +122,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <label class="checkbox">
-                            <input data-bind="checked: admin" type="checkbox"> Done
+                            <input data-bind="checked: admin" type="checkbox"> Amministratore
                         </label>
                     </div>
                 </div>
@@ -221,8 +221,8 @@
     <script type="text/javascript">
         function UsersViewModel() {
             var self = this;
-            self.authenticationURI = 'http://localhost:8080/api/authenticate';
-            self.usersURI = 'http://localhost:8080/api/users';
+            self.authenticationURI = 'https://servermaze.herokuapp.com/api/authenticate';
+            self.usersURI = 'https://servermaze.herokuapp.com/api/users';
             // self.authenticationURI = 'http://localhost:8080/api/authenticate';
             // self.usersURI = 'https://localhost:8080/api/users';
             self.username = ko.observable("unsigned user");
@@ -261,7 +261,8 @@
                         name: ko.observable(data.name),
                         password: ko.observable(data.password),
                         telefono: ko.observable(data.telefono),
-                        admin: ko.observable(data.admin)
+                        admin: ko.observable(data.admin),
+                        livelli: ko.observable(data.livelli.length) || null
                     });
                 });
             }
@@ -276,7 +277,7 @@
             }
 
             self.addLevel = function(uri,numero,data){
-                fetch("http://localhost:8080/api/users/level/"+uri, {
+                fetch("https://servermaze.herokuapp.com/api/users/level/"+uri, {
                     method:'PUT',
                     headers: {
                         'Content-Type':'application/json', 'x-access-token': self.token
@@ -285,6 +286,9 @@
                 .then(data =>{
                     console.log(data);
                     $('#level').modal('hide');
+                    self.refresh()
+                    //self.updateUser(user,data)
+                    
                 })
                 
             }
@@ -313,11 +317,14 @@
             }
             self.refresh = function() {
                 self.users();
+                self.users.removeAll()
                 
                 fetch(self.usersURI, { headers: {'x-access-token': self.token} })
                 .then((resp) => resp.json()) // Transform the data into json
                 .then((data) => {
                     for (var i = 0; i < data.length; i++) {
+                        // var livelli = ko.observable(data[i].livelli.length)
+
                         self.users.push({
                             uri: ko.observable(self.usersURI + '/' + data[i]._id),
                             uri2: ko.observable(data[i]._id),
@@ -325,7 +332,7 @@
                             password: ko.observable(data[i].password),
                             admin: ko.observable(data[i].admin),
                             telefono: ko.observable(data[i].telefono),
-                            livelli: ko.observable(data[i].livelli.length)
+                            livelli: ko.observable(data[i].livelli.length) || null
                         });
                     }
                 });
@@ -427,7 +434,7 @@
             }
 
             self.refresh = function(){
-                fetch('http://localhost:8080/api/users/level/'+self.uri(), {headers: {'x-access-token': self.token} })
+                fetch('https://servermaze.herokuapp.com/api/users/level/'+self.uri(), {headers: {'x-access-token': self.token} })
                 .then((resp) => resp.json()) // Transform the data into json
                 .then((data) => {
                     for (var i = 0; i < data.length; i++) {
