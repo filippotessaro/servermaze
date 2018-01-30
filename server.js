@@ -268,7 +268,9 @@ apiRoutes.route('/levels')
 					user.save()
 					console.log(user.livelli[i])
 					// res.json('Ok!')
+					res.json(user.livelli[i])
 					res.status(200).end()
+					
 					break;
 				}
 				
