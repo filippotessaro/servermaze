@@ -266,16 +266,14 @@ apiRoutes.route('/levels')
 					user.livelli[i].tempo = req.body.tempo || user.livelli[i].tempo
 					user.livelli[i].svolto = req.body.svolto || user.livelli[i].svolto
 					user.save()
-					console.log(user.livelli[i])
-					// res.json('Ok!')
-					res.json(user.livelli[i])
+					// console.log(user.livelli[i])
+					res.json('Ok!')
+					console.log("Modificato livello utente")
+					// res.json(user.livelli[i])
 					res.status(200).end()
-					
 					break;
 				}
 				
-			}else if(i=user.livelli.length-1 && user.livelli[i]._id != level_id){
-				res.status(404).end()
 			}
 		}
 	});
