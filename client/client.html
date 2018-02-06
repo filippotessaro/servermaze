@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Token-based Authentication Client Demo</title>
+    <title>View Per la gestione gegli utenti</title>
+    <link rel="icon" href="logobrowser.png" type="image/png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
@@ -11,7 +12,7 @@
 <body>
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="#">Token-based Authentication Client Demo</a>
+            <a class="brand" href="#">Homepage del Medico</a>
         </div>
     </div>
     <div id="main" class="container">
@@ -43,8 +44,8 @@
                 </td>
                 <td>
                     <p data-bind="text: livelli"></p>
-                    
-                </td> 
+
+                </td>
                 <td>
                     <button data-bind="click: $parent.beginShowLevels" class="btn btn-info">Mostra Livelli</button>
                     <button data-bind="click: $parent.beginEdit" class="btn">Edit</button>
@@ -147,7 +148,7 @@
                     <div class="controls">
                         <input data-bind="value: numero" type="text" id="inputTelefono" placeholder="1" style="width: 300px;">
                     </div>
-                    
+
                 </div>
             </form>
         </div>
@@ -155,7 +156,7 @@
             <button data-bind="click:addLevel" class="btn btn-primary">Update User</button>
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
         </div>
-    </div> 
+    </div>
 
 
     <div id="login" class="modal hide fade" tabindex="=1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
@@ -208,7 +209,7 @@
                                 </td>
                                 <td>
                                     <p data-bind="text: tempo"></p>
-                                </td> 
+                                </td>
                             </tr>
                             <!-- /ko -->
                         </table>
@@ -224,7 +225,7 @@
             self.authenticationURI = 'https://servermaze.herokuapp.com/api/authenticate';
             self.usersURI = 'https://servermaze.herokuapp.com/api/users';
             // self.authenticationURI = 'http://localhost:8080/api/authenticate';
-            // self.usersURI = 'https://localhost:8080/api/users';
+            // self.usersURI = 'http://localhost:8080/api/users';
             self.username = ko.observable("unsigned user");
             self.token = "";
             self.users = ko.observableArray();
@@ -232,7 +233,7 @@
             self.ajax = function(uri, method, data) {
                 return fetch(uri,
                 {
-                    'method': method, 
+                    'method': method,
                     'body': JSON.stringify(data),
                     'headers': {'Content-Type':'application/json', 'x-access-token': self.token}
                 })
@@ -288,9 +289,9 @@
                     $('#level').modal('hide');
                     self.refresh()
                     //self.updateUser(user,data)
-                    
+
                 })
-                
+
             }
 
             self.edit = function(user, data) {
@@ -318,7 +319,7 @@
             self.refresh = function() {
                 self.users();
                 self.users.removeAll()
-                
+
                 fetch(self.usersURI, { headers: {'x-access-token': self.token} })
                 .then((resp) => resp.json()) // Transform the data into json
                 .then((data) => {
@@ -342,8 +343,8 @@
             }
             self.login = function(user, password) {
                 fetch(self.authenticationURI,
-                { 
-                    method: 'POST', 
+                {
+                    method: 'POST',
                     body: 'name=' + user + '&password=' + password,
                     headers: {'Content-Type':'application/x-www-form-urlencoded'}
                 })
@@ -367,7 +368,7 @@
                 self.username('unsigned user');
                 self.beginLogin();
             }
-            
+
             self.beginLogin();
         }
         function AddUserViewModel() {
@@ -376,7 +377,7 @@
             self.password = ko.observable();
             self.telefono = ko.observable();
 
- 
+
             self.addUser = function() {
                 $('#add').modal('hide');
                 usersViewModel.add({
@@ -395,7 +396,7 @@
             self.password = ko.observable();
             self.telefono = ko.observable();
             self.admin = ko.observable();
- 
+
             self.setUser = function(user) {
                 self.user = user;
                 self.name(user.name());
@@ -404,7 +405,7 @@
                 self.admin(user.admin());
                 $('edit').modal('show');
             }
- 
+
             self.editUser = function() {
                 $('#edit').modal('hide');
                 usersViewModel.edit(self.user, {
@@ -422,7 +423,7 @@
             self.name = ko.observable();
             self.livelli = ko.observableArray();
             self.token = ko.observable();
-            
+
             self.setUser = function(user,token) {
                 self.user = user;
                 self.token=token;
@@ -453,7 +454,7 @@
                 self.livelli.removeAll();
             }
 
-            
+
 
         }
 
@@ -461,7 +462,7 @@
             var self = this;
             self.numero = ko.observable();
             self.user = ko.observable();
-            
+
             self.setUser = function(user) {
                 self.user = user;
             }
@@ -470,7 +471,7 @@
                 console.log("Numero: "+ self.numero());
 
                 usersViewModel.addLevel(self.user.uri2(), self.numero());
-                
+
             }
         }
 
@@ -478,13 +479,13 @@
             var self = this;
             self.username = ko.observable();
             self.password = ko.observable();
- 
+
             self.login = function() {
                 $('#login').modal('hide');
                 usersViewModel.login(self.username(), self.password());
             }
         }
-        
+
         var usersViewModel = new UsersViewModel();
         var addUserViewModel = new AddUserViewModel();
         var editUserViewModel = new EditUserViewModel();
