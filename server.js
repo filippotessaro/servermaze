@@ -226,10 +226,8 @@ apiRoutes.route('/users/level/:user_id')
 .get(function(req,res){
 	User.findById(req.params.user_id, function (err, user) {
 		if (err) { res.send(err); }
-			console.log(user);
+			console.log("Response all levels of user");
 			res.json(user.livelli);
-		
-
 	});
 })
 
