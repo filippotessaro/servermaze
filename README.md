@@ -1,4 +1,4 @@
-# Http Client per l'assegnazione dei livelli agli utenti
+# Token Web Server for Maze app
 
 This repo uses JSON Web Tokens and the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) package to implement token based authentication on a simple Node.js API.
 
@@ -17,7 +17,7 @@ This is a starting point to demonstrate the method of authentication by verifyin
 
 ### Getting a Token
 
-Send a `POST` request to `http://localhost:8080/api/authenticate` with test user parameters as `x-www-form-urlencoded`. 
+Send a `POST` request to `http://localhost:8080/api/authenticate` with test user parameters as `x-www-form-urlencoded`. Or open the file  `client.html` situated in the Folder `client`
 
 ```
   {
