@@ -253,13 +253,14 @@ apiRoutes.route('/levels')
   .put(function(req, res) {
 	var level_id = req.query.levelId
 	var user_id = req.query.userId
-	
+	var num = req.body.numerotocchi
+	var time = req.body.tempo
 	User.findById(user_id, function (err, user) {
 		if (err) { res.send(err); }
 		console.log('utente trovato!')
 		for(var i=0; user.livelli.length; i++){
 			if(user.livelli[i]._id == level_id){
-				if(req.body.numerotocchi!=0 && req.body.tempo!=0){
+				if(req.body.tempo > 0){
 					user.livelli[i].numerotocchi = req.body.numerotocchi || user.livelli[i].numerotocchi
 					user.livelli[i].tempo = req.body.tempo || user.livelli[i].tempo
 					user.livelli[i].svolto = req.body.svolto || user.livelli[i].svolto
@@ -270,6 +271,9 @@ apiRoutes.route('/levels')
 					// res.json(user.livelli[i])
 					res.status(200).end()
 					break;
+				}else{
+					console.log("Non posso assegnare un tempo strano ad un livello")
+					res.status(404).end();
 				}
 				
 			}
