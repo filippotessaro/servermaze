@@ -1,11 +1,27 @@
 {
-  "name": "node-token-authentication",
+  "name": "token-authentication",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "jsonwebtoken": "^5.7.0",
-    "mongoose": "^4.4.5",
-    "morgan": "^1.7.0"
-  }
+    "mongoose": "^4.13.10",
+    "morgan": "^1.9.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "This repo uses JSON Web Tokens and the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) package to implement token based authentication on a simple Node.js API.",
+  "version": "1.0.0",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filippotessaro/servermaze.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/filippotessaro/servermaze/issues"
+  },
+  "homepage": "https://github.com/filippotessaro/servermaze#readme"
 }
