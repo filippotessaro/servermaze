@@ -25,7 +25,14 @@
                 </p>
             </div>
         </div>
-        <table class="table table-striped">
+        <div class="container">
+            <!-- <h3>Filterable Table</h3>
+            <p>Type something in the input field to search the table for first name:</p>   -->
+            <input class="form-control" id="myInput" style="float:right" type="text" placeholder="Search..">
+            <br>
+        </div>
+        
+        <table id="myTable" class="table table-striped">
             <tr><td style="width: 1px;"></td><td><b>User</b></td><td><b>Password</b></td><td><b>Telefono</b></td><td><b>#Livelli Assegnati</b></td><td><b>Options</b></td></tr>
             <!-- ko foreach: users -->
             <tr>
@@ -50,13 +57,13 @@
                     <button data-bind="click: $parent.beginShowLevels" class="btn btn-info">Mostra Livelli</button>
                     <button data-bind="click: $parent.beginEdit" class="btn">Edit</button>
                     <button data-bind="click: $parent.beginAddLevel" class="btn">Add Level</button>
-                    <button data-bind="click: $parent.remove" class="btn btn-danger">Delete</button>
                     <span data-bind="visible: admin">
                         <button data-bind="click: $parent.unsetAdmin" class="btn">Set normal user</button>
                     </span>
                     <span data-bind="visible: !admin()">
                         <button data-bind="click: $parent.setAdmin" class="btn">Set admin</button>
                     </span>
+                    <button data-bind="click: $parent.remove" style="float:right;" class="btn btn-danger">Delete</button>
                 </td>
             </tr>
             <!-- /ko -->
@@ -218,6 +225,16 @@
                 <button class="btn" data-bind="click: close"  aria-hidden="true">Cancel</button>
             </div>
     </div>
+    <script>
+        $(document).ready(function(){
+          $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+        </script>
 
     <script type="text/javascript">
         function UsersViewModel() {
