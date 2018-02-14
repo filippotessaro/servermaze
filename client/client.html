@@ -19,9 +19,9 @@
         <div class="navbar">
             <div class="navbar-inner">
                 <p>
-                    <span>Welcome </span>
-                    <span data-bind="text: username"></span>
-                    <button data-bind="click: logout" class="btn">Log out</button>
+                    <span class="brand">Welcome </span>
+                    <span class="brand" data-bind="text: username"></span>
+                    <button data-bind="click: logout" class="btn btn-warning" style="float:right;">Log out</button>
                 </p>
             </div>
         </div>
@@ -43,14 +43,14 @@
                     <p data-bind="text: telefono"></p>
                 </td>
                 <td>
-                    <p data-bind="text: livelli"></p>
-
+                    <!-- <p data-bind="text: livelli"></p> -->
+                    <span data-bind="text: livelli" class="badge"></span>
                 </td>
                 <td>
                     <button data-bind="click: $parent.beginShowLevels" class="btn btn-info">Mostra Livelli</button>
                     <button data-bind="click: $parent.beginEdit" class="btn">Edit</button>
                     <button data-bind="click: $parent.beginAddLevel" class="btn">Add Level</button>
-                    <button data-bind="click: $parent.remove" class="btn">Delete</button>
+                    <button data-bind="click: $parent.remove" class="btn btn-danger">Delete</button>
                     <span data-bind="visible: admin">
                         <button data-bind="click: $parent.unsetAdmin" class="btn">Set normal user</button>
                     </span>
